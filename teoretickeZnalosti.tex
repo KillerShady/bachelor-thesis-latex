@@ -1,0 +1,217 @@
+\chapter{Teoretické znalosti}
+
+V tejto kapitole zhrnieme definície potrebných pojmov. Definície sú prebraté z prednášok z Logiky pre informatikov\cite{logicdefs}. Budeme používať skratku vtt, ktorá znamená \uv{vtedy a práve vtedy keď}. \\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Syntax logiky prvého radu}
+
+\emph{Symbolmi jazyka} logiky prvého rádu $\Lang$ sú mimologické, logické a pomocné symboly a indivíduové premenné. \\
+\emph{Indivíduové premenné} sú z nejakej nekonečnej spočítateľnej množiny $\Vars$. \\
+\emph{Mimologické symboly} sa delia na funkčné a predikátové symboly a indivíduové konštanty, ktoré sú v danom poradí z nejakých spočítateľných množín $\Funcs$, $\Preds$ a $\Consts$. \\
+\emph{Logické symboly} sa delia na \emph{logické spojky} (unárna $\neg$ a binárne $\land, \lor, \to$), \emph{symbol rovnosti} ($\doteq$) a \emph{kvantifikátory} (existenčný $\exists$ a všeobecný $\forall$). \\
+\emph{Pomocné symboly} sú (, ) a , (ľavá zátvorka, pravá zátvorka a čiarka). \\
+Množiny $\Vars,\Consts, \Funcs, \Preds$ sú vzájomne disjunktné. Logické ani pomocné symboly sa nevyskytujú v symboloch z $\Vars, \Consts, \Funcs, \Preds$. Každému symbolu $s \in \Preds \cup \Funcs$ je priradená arita ar($s$) $\in \mathbb{N}^+$. \\
+
+Množina $\Terms$ \emph{termov} jazyka logiky prvého rádu $\Lang$ je najmenšia množina postupností symbolov jazyka $\Lang$, pre ktorú platí $\Vars \subseteq \Terms$, $\Consts \subseteq \Terms$ a ak $f$ je funkčný symbol s aritou $n$ a $t_1, ..., t_n$ patria do $\Terms$, tak aj postupnosť symbolov $f(t_1, ..., t_n) \in \Terms$. Každý prvok $\Terms$ je \emph{term} jazyka $\Lang$ a nič iné nie je termom jazyka $\Lang$. \\
+
+\emph{Rovnostný atóm} jazyka $\Lang$ je každá postupnosť symbolov $t_1 \doteq t_2$, kde $t_1$ a $t_2$ sú termy jazyka $\Lang$.\\
+\emph{Predikátový atóm} jazyka $\Lang$ je každá postupnosť symbolov $P(t_1, ..., t_n)$, kde $P$ je predikátový symbol s aritou $n$ a $t_1, ..., t_n$ sú termy jazyka $\Lang$.\\
+\emph{Atomickými formulami} (skrátene \emph{atómami}) jazyka $\Lang$ súhrnne nazývame všetky rovnostné a predikátové atómy jazyka $\Lang$. Množinu všetkých atómov jazyka $\Lang$ označujeme $\Atoms$ .\\
+Množina $\Forms$ všetkých \emph{formúl} jazyka logiky prvého rádu $\Lang$ je najmenšia množina postupností symbolov jazyka $\Lang$, pre ktorú platí:
+\begin{enumerate}
+\item $\Atoms \subseteq \Forms$, 
+\item Ak $A$ patrí do $\Forms$, tak aj postupnosť symbolov $\neg A$ patrí do $\Forms$ a nazývame ju \emph{negácia} formuly $A$.
+\item Ak $A$ a $B$ sú v $\Forms$ , tak aj postupnosti symbolov $(A \land B), (A \lor B)$ a $(A \to B)$ patria do $\Forms$ a nazývame ich postupne \emph{konjunkcia}, \emph{disjunkcia} a \emph{implikácia} formúl $A$ a $B$.
+\item Ak $x$ je indivíduová premenná a $A$ patrí do $\Forms$, tak aj postupnosti symbolov $\exists x A$ a $\forall x A$ patria do $\Forms$ a nazývame ich postupne \emph{existenčná} a \emph{všeobecná kvantifikácia} formuly $A$ vzhľadom na $x$.
+\end{enumerate}
+Každý prvok $A$ množiny $\Forms$ nazývame \emph{formulou} jazyka $\Lang$.\\
+
+Nech $A$ je postupnosť symbolov, nech $B$ je formula, nech $Q \in \{\forall, \exists\}$ nech $x$ je premenná.\\
+V postupnosti $A$ = $… Qx B …$ sa výskyt formuly $Qx B$ nazýva \emph{oblasť platnosti kvantifikátora} $Qx$ v $A$.\\
+\emph{Výskyt} premennej $x$ v $A$ je \emph{viazaný} vtt sa nachádza v niektorej oblasti platnosti kvantifikátora $\forall x$ alebo $\exists x$ v $A$.\\
+\emph{Výskyt} premennej $x$ v $A$ je \emph{voľný} vtt sa nenachádza v žiadnej oblasti platnosti kvantifikátora $\forall x$ ani $\exists x$ v $A$.\\
+\emph{Premenná} $x$ je \emph{viazaná} v $A$ vtt $x$ sa vyskytuje v $A$ a všetky výskyty $x$ v $A$ sú viazané.
+\emph{Premenná} $x$ je \emph{voľná} v $A$ vtt $x$ má v $A$ aspoň jeden voľný výskyt.
+Množinu voľných premenných formuly $A$ označíme free($A$).
+Pre každú indivíduovú premennú $x$, každý symbol konštanty $a$, každú aritu $n > 0$, každý predikátový symbol $P$ s aritou $n$, všetky termy $t_1, ..., t_n$ a všetky formuly $A$, $B$ platí:
+\begin{align*}
+\text{free}(x) &= \{x\} \\
+\text{free}(a) &= \{\} \\
+\text{free}(t_1 \doteq t_2) &= \text{free}(t_1) \cup \text{free}(t_2) \\
+\text{free}( P(t_1, ..., t_n) ) &= \text{free}(t_1) \cup ... \cup \text{free}(t_n) \\
+\text{free}( \neg A ) &= \text{free}(A) \\
+\text{free}( (A \land B) ) &= \text{free}( (A \lor B) ) = \text{free}( (A \to B) ) = \\
+&= \text{free}(A) \cup \text{free}(B) \\
+\text{free}( \forall x A ) &= \text{free}( \exists x A ) = \text{free}(A) \setminus \{x\}
+\end{align*}
+
+Formula $A$ jazyka $\Lang$ je \emph{uzavretá} vtt žiadna premenná nie je voľná v $A$ (teda free$(A) = \emptyset$).\\
+
+Napríklad pre jazyk $\Lang_p$ s $\mathcal{C}_{\Lang_p} = \{\text{kitty}\}, \mathcal{F}_{\Lang_p} = \emptyset, \mathcal{P}_{\Lang_p} = \{\text{cat}^1, \text{loves}^2\}$ je 
+\begin{center}
+$X = \exists x \forall y ($cat$(y) \to $loves$(x, y)) \land \forall x (($cat$(x) \land $loves$(x, $kitty$)) \to $loves$($kitty$, x))$
+\end{center}
+formulou. Nazvime ju $X$.\\
+Termy použité v $X$ sú $y, x$ a kitty.\\
+Atómy použité v $X$ sú cat$(y)$, loves$(x, y)$, cat$(x)$, loves$(x, $kitty$)$ a loves$($kitty$, x)$.\\
+Oblasťou platnosti kvantifikátora $\forall y$ v $X$ je $\forall y ($cat$(y) \to $loves$(x, y))$, čo je tiež formula. Nazvime ju $Y$.\\
+$X$ je uzavretá, lebo free($X$) = $\emptyset$ ale $Y$ nie je, lebo free($Y$) = $\{x\}$.
+
+\emph{Štruktúrou} pre jazyk $\Lang$ nazývame každú dvojicu $\Struct = (D, i)$, kde \\
+\emph{doména} $D$ štruktúry $\Struct$ je ľubovoľná neprázdna množina;\\
+\emph{interpretačná funkcia} $i$ štruktúry $\Struct$ je zobrazenie, ktoré
+\begin{itemize}
+\item každej indivíduovej konštante $c$ jazyka $\Lang$ priraďuje prvok $i(c) \in D$
+\item každému funkčnému symbolu $f$ jazyka $\Lang$ s aritou $n$ priraďuje funkciu \\$i(f): D^n \to D$
+\item každému predikátovému symbolu $P$ jazyka $\Lang$ s aritou $n$ priraďuje množinu \\$i(P) \subseteq D^n$.
+\end{itemize}
+
+Nech $\Struct = (D, i)$ je štruktúra pre jazyk $\Lang$. \emph{Ohodnotenie indivíduových premenných} je ľubovoľná funkcia $e: \Vars \to D$. Nech ďalej $x$ je indivíduová premenná z $\Vars$ a $v$ je prvok $D$. Zápis $e(x/v)$ označuje ohodnotenie $e'$ indivíduových premenných, pre ktoré platí $e'(x) = v$ a $e'(y) = e(y)$, ak $y$ je iná premenná ako $x$.\\
+
+Nech $\Struct = (D, i)$ je štruktúra pre jazyk logiky prvého rádu $\Lang$, nech $e$ je ohodnotenie premenných. \emph{Hodnotou termu} $t$ v štruktúre $\Struct$ pri ohodnotení premenných $e$ je prvok z $D$ označovaný $t^\Struct [e]$ a zadefinovaný induktívne pre všetky premenné $x$, konštanty $a$, každú aritu $n$, všetky funkčné symboly $f$ s aritou $n$, a všetky termy $t_1, ..., t_n$ nasledovne:
+\begin{align*}
+x^\Struct [e] &= e(x) \\
+a^\Struct [e] &= i(a) \\
+(f(t_1, ..., t_n))^\Struct [e] &= i(f)(t_1^\Struct [e], ..., t_n^\Struct [e]).
+\end{align*}
+
+Nech $\Struct = (D, i)$ je štruktúra pre $\Lang$, $e$ je ohodnotenie premenných. Relácia \emph{štruktúra $\Struct$ spĺňa formulu $X$ pri ohodnotení $e$} ($\Struct \models X[e]$) má nasledovnú induktívnu definíciu:
+\begin{align*}
+&\Struct \models t_1 \doteq t_2 [e] \text{ vtt } t_1^\Struct [e] = t_2^\Struct [e] \\
+&\Struct \models P(t_1, ..., t_n) [e] \text{ vtt } (t_1^\Struct [e], ..., t_n^\Struct [e]) \in i(P) \\
+&\Struct \models \neg A [e] \text{ vtt } \Struct \not\models A [e] \\
+&\Struct \models (A \land B) [e] \text{ vtt } \Struct \models A [e] \text{ a zároveň } \Struct \models B [e] \\
+&\Struct \models (A \lor B) [e] \text{ vtt } \Struct \models A [e] \text{ alebo } \Struct \models B [e] \\
+&\Struct \models (A \to B) [e] \text{ vtt } \Struct \not\models A [e] \text{ alebo } \Struct \models B [e] \\
+&\Struct \models \exists x A [e] \text{ vtt pre nejaký prvok } m \in D \text{ máme } \Struct \models A [e(x/m)] \\
+&\Struct \models \forall x A [e] \text{ vtt pre každý prvok } m \in D \text{ máme } \Struct \models A [e(x/m)]
+\end{align*}
+pre všetky arity $n > 0$, všetky predikátové symboly $P$ s aritou $n$, všetky termy $t_1, ..., t_n$, všetky premenné $x$ a všetky formuly $A, B$ jazyka $\Lang$.\\
+Nech $X$ je uzavretá formula jazyka $\Lang$ a nech $\Struct$ je štruktúra pre $\Lang$. Formula $X$ je \emph{pravdivá} v štruktúre $\Struct$ (skrátene $\Struct \models X$) vtt $\Struct$ spĺňa formulu $X$ pri každom ohodnotení $e$. Vtedy tiež hovoríme, že $\Struct$ je \emph{modelom} formuly $X$.\\
+
+Napríklad nech $\Struct_p = (D, i)$ je štruktúra pre $\Lang_p$, $D = \{a, b, c, d\}$ a 
+\begin{itemize}
+\item $i($kitty$) = d$
+\item $i($cat$) = \{b, c, d\}$
+\item $i($loves$) = \{(a, b), (a, c), (a, d)\}$
+\end{itemize}
+$\Struct_p$ je modelom $X = \exists x $ loves$(x, $kitty$)$, lebo:\\
+nech e je ľubovoľné ohodnotenie, potom
+\begin{itemize}
+\item $\Struct_p \models \exists x $loves$(x, $kitty$)[e]$ vtt
+\item $\Struct_p \models $loves$(x, $kitty$)[e(x/a)]$, 
+\item $(x^{\Struct_p}[e(x/a)], $kitty$^{\Struct_p}[e(x/a)]) \in i($loves$)$
+\item $(a, i($kitty$)) \in i($loves$)$
+\item $(a, d) \in i($loves$)$
+\end{itemize}
+
+Formula $X$ je \emph{prvorádovo ekvivalentná} s formulou $Y$ ($X \Leftrightarrow Y$) vtt pre každú štruktúru $\Struct$ a každé ohodnotenie $e$ máme $\Struct \models X[e]$ vtt $\Struct \models Y [e]$. Príslovku „prvorádovo“ budeme zvyčajne vynechávať.\\
+Model množiny formúl $T$ je štruktúra, v ktorej sú pravdivé všetky formuly z $T$.\\
+Množiny formúl $S$ a $T$ sú (prvorádovo) \emph{ekvisplniteľné} (rovnako splniteľné) vtt $S$ má model práve vtedy, keď $T$ má model.\\
+
+Nech $\Lang$ je jazyk výrokovologickej časti logiky prvého rádu a nech $X, A, B$ sú formuly jazyka $\Lang$. \emph{Substitúciou} $B$ za $A$ v $X$ (skrátene $X[A|B]$) nazývame formulu, ktorá vznikne nahradením každého výskytu $A$ v $X$ formulou $B$.\\
+Pre všetky formuly $A, B, X, Y$ jazyka $\Lang$, všetky indivíduové premenné $x$, všetky kvantfikátory $Q \in \{\forall, \exists\}$ a všetky binárne spojky $b \in \{\land, \lor, \to\}$ platí
+\begin{itemize}
+\item $X[A|B] = B$, ak $A = X$
+\item $X[A|B] = X$, ak $X$ je atóm a $A \ne X$
+\item $(\neg X)[A|B] = \neg(X[A|B])$, ak $A \ne \neg X$
+\item $(X b Y)[A|B] = ((X[A|B]) b (Y[A|B]))$, ak $A \ne (X b Y)$
+\item $(Qx X)[A|B] = Qx (X[A|B])$, ak $A \ne (Qx X)$ a free$(A) \supseteq$ free$(B)$
+\end{itemize}
+Nech $\Lang$ je jazyk výrokovologickej časti logiky prvého rádu a nech $X$ je formula, $A$ a $B$ sú výrokovologicky ekvivalentné formuly jazyka $\Lang$. Potom formuly $X$ a $X[A|B]$ sú tiež výrokovologicky ekvivalentné.\\
+
+\emph{Katalóg ekvivalntných úprav}
+Pre ľubovoľnú tautológiu $\top$, ľubovoľnú nesplniteľnú formulu $\bot$, každú formulu $A, B, C$, každú premennú $x$:
+\begin{align*}
+(A \land (B \land C)) &\Leftrightarrow ((A \land B) \land C)\\
+(A \lor (B \lor C)) &\Leftrightarrow ((A \lor B) \lor C)\\
+(A \land (B \lor C)) &\Leftrightarrow ((A \land B) \lor (A \land C))\\
+(A \lor (B \land C)) &\Leftrightarrow ((A \lor B) \land (A \lor C))\\
+\end{align*}
+\begin{align*}
+(A \to B) &\Leftrightarrow (\neg A \lor B)	&	\neg\neg A &\Leftrightarrow A\\
+\neg(A \land B) &\Leftrightarrow (\neg A \lor \neg B)	&	\neg(A \lor B) &\Leftrightarrow (\neg A \land \neg B)\\
+(A \land B) &\Leftrightarrow (B \land A)	&	(A \lor B) &\Leftrightarrow (B \lor A)\\
+(A \land A) &\Leftrightarrow A 			&	(A \lor A) &\Leftrightarrow A\\
+(A \land \top) &\Leftrightarrow A 		&	(A \lor \bot)& \Leftrightarrow A\\
+(A \lor (A \land B)) &\Leftrightarrow A 		&	(A \land (A \lor B)) &\Leftrightarrow A\\
+(A \land \neg A) &\Leftrightarrow \bot 		&	(A \lor \neg A) &\Leftrightarrow \top\\
+\neg \exists x A &\Leftrightarrow \forall x \neg A 		&	\neg \forall x A &\Leftrightarrow \exists x \neg A\\
+\exists x(A \lor B) &\Leftrightarrow (\exists x A \lor \exists x B)	&	\forall x (A \land B) &\Leftrightarrow (\forall x A \land \forall x B)
+\end{align*}
+Pre každú formulu $D$, v ktorej sa $x$ nevyskytuje voľná:
+\begin{align*}
+\exists x(A \lor D) &\Leftrightarrow \exists x A \lor D 	&	\forall x (A \lor D) &\Leftrightarrow \forall x A \lor D\\
+\exists x (A \land D) &\Leftrightarrow \exists x A \land D 	&	\forall x (A \land D) &\Leftrightarrow \forall x A \land D\\
+\exists x D &\Leftrightarrow D 					&	\forall x D &\Leftrightarrow D
+\end{align*}
+Za podmienky, že $y$ nemá voľný výskyt v $A$:
+\begin{align*}
+\exists x A &\Leftrightarrow \exists y A\{x \mapsto y\}	&	\forall x A &\Leftrightarrow \forall y A\{x \mapsto y\}
+\end{align*}
+
+\emph{Substitúciou} (v jazyku $\Lang$) nazývame každé zobrazenie $\sigma: V \to \Terms$ z nejakej množiny indivíduových premenných $V \subseteq \Vars$ do termov jazyka $\Lang$.\\
+Nech $A$ je postupnosť symbolov (term alebo formula), nech $t, t_1, ..., t_n$ sú termy a $x, x_1, ..., x_n$ sú premenné.
+Term $t$ je \emph{substituovateľný} za premennú $x$ v $A$ vtt nie je pravda, že pre niektorú premennú $y$ vyskytujúcu sa v $t$ platí, že v nejakej oblasti platnosti kvantifikátora $\exists y$ alebo $\forall y$ vo formule $A$ sa premenná $x$ vyskytuje voľná.\\
+Substitúcia $\{x_1 \mapsto t_1, ..., x_n \mapsto t_n\}$ je \emph{aplikovateľná} na $A$ vtt term $t_i$ je substituovateľný za $x_i$ v $A$ pre každé $i \in \{1, ..., n\}$.\\
+Nech $A$ je postupnosť symbolov, nech $\sigma = \{x_1 \mapsto t_1, ..., x_n \mapsto t_n\}$ je substitúcia. Ak $\sigma$ je aplikovateľná na $A$, tak $A\sigma$ je postupnosť symbolov, ktorá vznikne súčasným nahradením každého voľného výskytu premennej $x_i$ v $A$ termom $t_i$.\\
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Klauzálna teória}
+\emph{Literál} je atomická formula $P(t_1, ..., t_m)$ jazyka $\Lang$ alebo jej negácia $\neg P(t_1, ..., t_m)$. \\
+\emph{Klauzula} je všeobecný uzáver disjunkcie literálov, teda uzavretá formula jazyka $\Lang$ v tvare $\forall x_1 ... \forall x_k (L_1 \lor ... \lor L_n)$ kde $L_1, ..., L_n$ sú literály a $x_1, ..., x_k$ sú všetky voľné premenné formuly $L_1 \lor ... \lor L_n$. Klauzula môže byť aj jednotková ($\forall x L_1$) alebo prázdna ($\square$).\\
+\emph{Klauzálna teória} je množina klauzúl $\{C_1, ..., C_n\}$. Môže byť tvorená aj jedinou klauzulou alebo byť prázdna.\\
+
+Formula $X$ je v \emph{negačnom normálnom tvare} (NNF) vtt neobsahuje implikáciu a pre každú jej podformulu $\neg A$ platí, že $A$ je atomická formula.\\
+Formula $X$ je v \emph{prenexnom normálnom tvare} (PNF) vtt má tvar $Q_1x_1 ... Q_nx_n A$, kde $Q_i \in \{\forall, \exists\}$, $x_i$ je premenná a $A$ je formula bez kvantifikátorov.\\
+Formula $X$ je v \emph{konjunktívnom normálnom tvare} (CNF) vtt má tvar $\forall x_1 ... \forall x_n A$, kde $x_i$ je premenná a $A$ je konjunkcia disjunkcií literálov.
+
+\emph{Skolemizácia} je úprava formuly $X$ v NNF, ktorou nahradíme existenčné kvantifikátory novými konštantami alebo funkčnými symbolmi.\\
+Ak sa vo formule $X$ vyskytuje $\exists y A$ mimo všetkých oblastí platnosti všeobecných kvantifikátorov, tak pridáme do jazyka novú skolemovskú konštantu $c$ a každý výskyt podformuly $\exists y A$ v $X$ mimo všetkých oblastí platnosti všeobecných kvantifikátorov nahradíme formulou $A\{y \mapsto c\}$.\\
+Ak sa vo formule $X$ vyskytuje $\exists y A$ v oblasti platnosti všeobecných kvantifikátorov premenných $x_1, ..., x_n$ $\left(X = ... \forall x_1(... \forall x_2(... \forall x_n(... \exists y A ...) ...) ...) ... \right)$, tak pridáme do jazyka nový funkčný symbol, skolemovskú funkciu $f$ a každý výskyt $\exists y A$ v $X$ v oblasti platnosti kvantifikátorov $\forall x1, ..., \forall x_n$ nahradíme formulou $A\{y \mapsto f(x_1, x_2, ..., x_n)\}$.\\
+Pre každú uzavretú formulu $X$ v jazyku $\Lang$ existuje formula $Y$ vo vhodnom rozšírení $\Lang'$ jazyka $\Lang$ taká, že $Y$ neobsahuje existenčné kvantifikátory a $X$ a $Y$ sú ekvisplniteľné.\\
+
+Existuje viacero algoritmov \emph{konverzie do prvorádovej CNF}. My budeme používať nasledujúci algoritmus:
+\begin{enumerate}
+\item Implikácie nahradíme disjunkciami.
+\item Negačný normálny tvar (NNF): Presunieme negácie k atómom.
+\item Premenujeme premenné tak, aby každý kvantifikátor viazal inú premennú ako ostatné kvantifikátory.
+\item Skolemizácia: Existenčné kvantifikátory nahradíme substitúciou nimiviazaných premenných za skolemovské konštanty/aplikácie skolemovských funkcií na príslušné všeobecne kvantifikované premenné.
+\item Prenexný normálny tvar (PNF): presunieme všeobecné kvantifikátory na začiatok formuly.
+\item Konjunktívny normálny tvar (CNF): distribuujeme disjunkcie do konjunkcií.
+\item Odstránime konjunkcie rozdelením konjunktov do samostatne kvantifikovaných klauzúl.
+\end{enumerate}
+
+Napríklad ekvisplniteľná klauzálna teória pre formulu 
+\begin{center}
+$\exists x \forall y ($cat$(y) \to $loves$(x, y)) \land \forall x (($cat$(x) \lor $loves$(x, $kitty$)) \to $loves$($kitty$, x))$ 
+\end{center}
+v jazyku $\Lang$ s $\Consts = \{\text{kitty}\}, \Funcs = \emptyset, \Preds = \{\text{cat}^1, \text{loves}^2\}$ dostaneme následovne:
+\begin{enumerate}
+\item $\exists x \forall y (\neg$cat$(y) \lor $loves$(x, y)) \land \forall x (\neg($cat$(x) \lor $loves$(x, $kitty$)) \lor $loves$($kitty$, x))$ 
+\item $\exists x \forall y (\neg$cat$(y) \lor $loves$(x, y)) \land \forall x ((\neg$cat$(x) \land \neg$loves$(x, $kitty$)) \lor $loves$($kitty$, x))$ 
+\item $\exists x \forall y (\neg$cat$(y) \lor $loves$(x, y)) \land \forall z ((\neg$cat$(z) \land \neg$loves$(z, $kitty$)) \lor $loves$($kitty$, z))$ 
+\item $\forall y (\neg$cat$(y) \lor $loves$(a, y)) \land \forall z ((\neg$cat$(z) \land \neg$loves$(z, $kitty$)) \lor $loves$($kitty$, z))$ 
+\item $\forall y \forall z ((\neg$cat$(y) \lor $loves$(a, y)) \land ((\neg$cat$(z) \land \neg$loves$(z, $kitty$)) \lor $loves$($kitty$, z)))$ 
+\item $\forall y \forall z ((\neg$cat$(y) \lor $loves$(a, y)) \land \\ 
+((\neg$cat$(z) \lor $loves$($kitty$, z)) \land (\neg$loves$(z, $kitty$) \lor $loves$($kitty$, z))))$ 
+\item \begin{align*}
+	T = \{ &\forall y \forall z (\neg\text{cat}(y) \lor \text{loves}(a, y)), \\
+&\forall y \forall z (\neg\text{cat}(z) \lor \text{loves}(\text{kitty}, z)), \\
+&\forall y \forall z (\neg\text{loves}(z, \text{kitty}) \lor \text{loves}(\text{kitty}, z))\}
+	\end{align*}
+\end{enumerate}
+Rozšírený jazyk $\Lang'$ pre skolemizáciu má $\Consts = \{\text{kitty}, a\}, \Funcs = \emptyset, \Preds = \{\text{cat}^1, \text{loves}^2\}$
+
+
+
+
+
+
+
+
+
+
+
