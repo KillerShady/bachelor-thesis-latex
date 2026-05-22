@@ -1,26 +1,40 @@
 \chapter{Východiská práce}
 
 
+\section{Prehľad existujúceho ekosystému}
+
+
+
+
+
+
+
 \section{Použité technológie}
 
 V tejto podkapitole zhrnieme a krátko opíšeme technológie, ktoré sme použili pri vývoji aplikácie.
 
 \subsection{HTML, CSS, Bootstrap}
 
+HTML \cite{HTMLdocs}, alebo HyperText Markup Language, je základný jazyk, ktorý sa používa na tvorbu webových stránok. Primárne využitie HTML je na definovanie štruktúry webovej stránky. HTML dokumenty sú tvorené textom a prvkami v stromovej štruktúre. Prvky dokumentu sa označujú začiatočnými a koncovými značkami a môžu mať atribúty. Atribúty prvku riadia ako sa správajú.
+Na zmenenie vizuálu webových stránok sa používa CSS \cite{CSSdocs}, alebo Cascading Style Sheets. CSS je jazyk, ktorý popisuje ako sa prvky HTML zobrazujú v rôznych médiách.
+Bootstrap \cite{Bootstrapdocs} je populárny front-end toolkit, ktorý poskytuje predprivané HTML komponenty, ako sú napríklad tlačidla, tooltip-y atď. Bootstrap tiež poskytuje CSS štýly.
 
-\subsection{React}
+\subsection{TypeScript}
 
+JavaScrypt je programovací jazyk, ktorý umožňuje dynamicky meniť obsah webových stránok. TypeScript \cite{Typescriptdocs} je jazyk založený na Javascrypte. TypeScript obsahuje silné typovanie, čo pomáha pri vývoji ľahším odhalením chýb. Pred spustením aplikácie sa TypeScript prekladá do JavaScriptu, čo umožňuje kompatibilitu s JavaSriptom.
 
-\subsection{Typescript}
+\subsection{React, React-Bootstrap}
 
+React \cite{Reactdocs} je knižnica pre Javascript, ktorá slúži na vytvorenie používateľského rozhrania webových aplikácií. Základným stavebným kameňom Reactu sú komponenty. Každý komponent je definovaný ako JavaScriptová funkcia, ktorá reprezentuje časť rozhrania. Komponenty sú definovane v súboroch s príponou \uv{.jsx}, v ktorých je možné kombinovať Javascript s HTML. Výstup komponentu je JSX element. Komponenty môžu mať stav, ktorý React kontroluje. Ak sa stav komponentu zmení, React aktualizuje iba príslušnú časť rozhrania. Na využitie stavu React používa takzvané \emph{hooky}.
+React-Bootstrap \cite{ReactBootstrapdocs} je knižnica, ktorá prepája React s Bootstrapom. Umožňuje vytvárať Bootsrapove komponenty v tvare Reactových komponentov.
 
 \subsection{Redux}
 
-
-\subsection{Vite}
-
-
+Redux \cite{Reduxdocs} je knižnica v jazyku JavaScrypt určená na spravovanie globálneho stavu v aplikácii. Redux používa nemenný \emph{store} na ukladanie globálneho stavu. Na zmenu stavu používajú \emph{reducery} a \emph{akcie}. Reducer je funkcia, ktorá na vstupe dostane stav a akciu. Keďže store je nemenný, reducer vráti nový stav zmenení podľa akcie. Akcia je objekt, ktorý popisuje identifikátor zmeny stavu, a prípadne obsahuje ďalšie voliteľné parametre. Na získanie aktuálneho stavu Redux používa \emph{selektory}. Selektor je funkcia, ktorá na vstupe dostane stav a vráti informáciu získanú zo stavu.
+Redux sa často používa s Reactom na manažovanie stavu Reactových komponentov. Reactové komponent môžu používať hooky pre použite selektorov a zmenu stavu.
 
 
-\section{Prehľad existujúceho ekosystému}
+
+
+
 
