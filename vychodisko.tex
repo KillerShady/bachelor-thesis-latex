@@ -3,21 +3,21 @@
 
 \section{Prehľad existujúceho ekosystému}
 
+Pri výučbe predmetu Logika pre informatikov je používaná webová aplikácia Logic Workbook (elektronický pracovný zošit), ktorá bola vyvinutá ako súčasť predošlej bakalárskej práce \cite{logicworkbook}. Hlavným účelom Logic Workbooku je spájanie viacerých učebných pomôcok do jednej aplikácie. Učebné pomôcky pre zošit sú najprv vyvinuté ako samostatné aplikácie na základe knižnice React. Pre integrovanie aplikácie do zošita, je potrebné aplikáciu zverejniť ako knižnicu, ktorá exportuje funkciu \texttt{prepare} na inicializáciu aplikácie a Reactový funkcionálny komponent \texttt{AppComponent}. Do aplikácie sú integrované viaceré menšie aplikácie, ktoré tiež vznikli ako súčasti viacerých bakalárskych prác. 
 
+Jednou z integrovaných aplikácií je editor rezolvenčných dôkazov \cite{rezolvovac}. Editor ako vstup vyžaduje formuly v CNF tvare. Editor neobsahuje kontrolu skolemizácie a ekvivalentných úprav, čo je pri zadávaní komplexnejších cvičení problematické. Pre vyriešenie tohto problému vznikla táto bakalárska práca.
 
-
-
-
+Ďalšou integrovanou aplikáciou je prieskumník štruktúr. Prieskumník štruktúr obsahuje dátový model na vyhodnocovanie výrazov, ktorý bol naposledy rozšírený ako súčasťou bakalárskej práce Reimplementácia prieskumníka štruktúr pre logiku prvého rádu \cite{structureexplorer}. Model je získaný nástrojom pre syntaktickú analýzu textových reťazcov vytvorený počas bakalárskej práce Prieskumník sémantiky logiky prvého rádu \cite{explorercifra}. V modeli a nástroji pre syntaktickou analýzou ale chýba reprezentácia tautológie a nesplniteľnej formuly, ktoré potrebujeme pre kontrolu viacerých ekvivalentných úprav (napríklad úpravy \ref{upravy:9}), preto počas implementácie tejto bakalárskej práce ich rozšírime.
 
 \section{Použité technológie}
 
-V tejto podkapitole zhrnieme a krátko opíšeme technológie, ktoré sme použili pri vývoji aplikácie.
+V tejto podkapitole zhrnieme a krátko opíšeme technológie, ktoré sme použili pri vývoji aplikácie. Technológie boli zvolené na základe toho, že sú použité v iných aplikáciách integrovaných do Logic Workbook alebo v samotnom pracovnom zošite.
 
 \subsection{HTML, CSS, Bootstrap}
 
 HTML \cite{HTMLdocs}, alebo HyperText Markup Language, je základný jazyk, ktorý sa používa na tvorbu webových stránok. Primárne využitie HTML je na definovanie štruktúry webovej stránky. HTML dokumenty sú tvorené textom a prvkami v stromovej štruktúre. Prvky dokumentu sa označujú začiatočnými a koncovými značkami a môžu mať atribúty. Atribúty prvku riadia ako sa správajú.
 Na zmenenie vizuálu webových stránok sa používa CSS \cite{CSSdocs}, alebo Cascading Style Sheets. CSS je jazyk, ktorý popisuje ako sa prvky HTML zobrazujú v rôznych médiách.
-Bootstrap \cite{Bootstrapdocs} je populárny front-end toolkit, ktorý poskytuje predprivané HTML komponenty, ako sú napríklad tlačidla, tooltip-y atď. Bootstrap tiež poskytuje CSS štýly.
+Bootstrap \cite{Bootstrapdocs} je populárny front-end toolkit, ktorý poskytuje predpripravené HTML komponenty, ako sú napríklad tlačidlá, tooltipy atď. Bootstrap tiež poskytuje CSS štýly.
 
 \subsection{TypeScript}
 
@@ -26,7 +26,7 @@ JavaScrypt je programovací jazyk, ktorý umožňuje dynamicky meniť obsah webo
 \subsection{React, React-Bootstrap}
 
 React \cite{Reactdocs} je knižnica pre Javascript, ktorá slúži na vytvorenie používateľského rozhrania webových aplikácií. Základným stavebným kameňom Reactu sú komponenty. Každý komponent je definovaný ako JavaScriptová funkcia, ktorá reprezentuje časť rozhrania. Komponenty sú definovane v súboroch s príponou \uv{.jsx}, v ktorých je možné kombinovať Javascript s HTML. Výstup komponentu je JSX element. Komponenty môžu mať stav, ktorý React kontroluje. Ak sa stav komponentu zmení, React aktualizuje iba príslušnú časť rozhrania. Na využitie stavu React používa takzvané \emph{hooky}.
-React-Bootstrap \cite{ReactBootstrapdocs} je knižnica, ktorá prepája React s Bootstrapom. Umožňuje vytvárať Bootsrapove komponenty v tvare Reactových komponentov.
+React-Bootstrap \cite{ReactBootstrapdocs} je knižnica, ktorá prepája React s Bootstrapom. Umožňuje vytvárať Bootstrapove komponenty v tvare Reactových komponentov.
 
 \subsection{Redux}
 
