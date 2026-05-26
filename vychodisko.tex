@@ -15,22 +15,22 @@ V tejto podkapitole zhrnieme a krátko opíšeme technológie, ktoré sme použi
 
 \subsection{HTML, CSS, Bootstrap}
 
-HTML \cite{HTMLdocs}, alebo HyperText Markup Language, je základný jazyk, ktorý sa používa na tvorbu webových stránok. Primárne využitie HTML je na definovanie štruktúry webovej stránky. HTML dokumenty sú tvorené textom a prvkami v stromovej štruktúre. Prvky dokumentu sa označujú začiatočnými a koncovými značkami a môžu mať atribúty. Atribúty prvku riadia ako sa správajú.
-Na zmenenie vizuálu webových stránok sa používa CSS \cite{CSSdocs}, alebo Cascading Style Sheets. CSS je jazyk, ktorý popisuje ako sa prvky HTML zobrazujú v rôznych médiách.
+HTML \cite{HTMLdocs}, alebo HyperText Markup Language, je základný jazyk, ktorý sa používa na tvorbu webových stránok. Primárne využitie HTML je na definovanie štruktúry webovej stránky. HTML dokumenty sú tvorené textom a elementami v stromovej štruktúre. Elementy dokumentu sa označujú začiatočnými a koncovými značkami a môžu mať atribúty. Atribúty prvku riadia ako sa správajú.
+Na zmenenie vizuálu webových stránok sa používa CSS \cite{CSSdocs}, alebo Cascading Style Sheets. CSS je jazyk, ktorý popisuje ako sa elementy HTML zobrazujú v rôznych médiách.
 Bootstrap \cite{Bootstrapdocs} je populárny front-end toolkit, ktorý poskytuje predpripravené HTML komponenty, ako sú napríklad tlačidlá, tooltipy atď. Bootstrap tiež poskytuje CSS štýly.
 
 \subsection{TypeScript}
 
-JavaScrypt je programovací jazyk, ktorý umožňuje dynamicky meniť obsah webových stránok. TypeScript \cite{Typescriptdocs} je jazyk založený na Javascrypte. TypeScript obsahuje silné typovanie, čo pomáha pri vývoji ľahším odhalením chýb. Pred spustením aplikácie sa TypeScript prekladá do JavaScriptu, čo umožňuje kompatibilitu s JavaSriptom.
+JavaScrypt je programovací jazyk, ktorý umožňuje dynamicky meniť obsah webových stránok. TypeScript \cite{Typescriptdocs} je jazyk založený na JavaScripte. TypeScript obsahuje silné typovanie, čo pomáha pri vývoji ľahším odhalením chýb. Pred spustením aplikácie sa TypeScript prekladá do JavaScriptu, čo umožňuje kompatibilitu s JavaScriptom.
 
 \subsection{React, React-Bootstrap}
 
-React \cite{Reactdocs} je knižnica pre Javascript, ktorá slúži na vytvorenie používateľského rozhrania webových aplikácií. Základným stavebným kameňom Reactu sú komponenty. Každý komponent je definovaný ako JavaScriptová funkcia, ktorá reprezentuje časť rozhrania. Komponenty sú definovane v súboroch s príponou \uv{.jsx}, v ktorých je možné kombinovať Javascript s HTML. Výstup komponentu je JSX element. Komponenty môžu mať stav, ktorý React kontroluje. Ak sa stav komponentu zmení, React aktualizuje iba príslušnú časť rozhrania. Na využitie stavu React používa takzvané \emph{hooky}.
+React \cite{Reactdocs} je knižnica pre JavaScript, ktorá slúži na vytvorenie používateľského rozhrania webových aplikácií. Základným stavebným kameňom Reactu sú komponenty. Každý komponent je definovaný ako JavaScriptová funkcia, ktorá reprezentuje časť rozhrania. Komponenty sú definovane v súboroch s príponou \uv{.jsx}, v ktorých je možné kombinovať JavaScript s HTML, pričom volanie komponentov sa tiež zapisuje ako HTML elementy. Výstup komponentu je JSX element, ktorý React synchronizuje s HTML, ktoré zobrazuje webový prehliadač. Komponenty môžu mať stav, ktorý React kontroluje. Ak sa stav komponentu zmení, React aktualizuje iba príslušnú časť rozhrania. Na využitie stavu React používa takzvané \emph{hooky}.
 React-Bootstrap \cite{ReactBootstrapdocs} je knižnica, ktorá prepája React s Bootstrapom. Umožňuje vytvárať Bootstrapove komponenty v tvare Reactových komponentov.
 
 \subsection{Redux}
 
-Redux \cite{Reduxdocs} je knižnica v jazyku JavaScrypt určená na spravovanie globálneho stavu v aplikácii. Redux používa nemenný \emph{store} na ukladanie globálneho stavu. Na zmenu stavu používajú \emph{reducery} a \emph{akcie}. Reducer je funkcia, ktorá na vstupe dostane stav a akciu. Keďže store je nemenný, reducer vráti nový stav zmenení podľa akcie. Akcia je objekt, ktorý popisuje identifikátor zmeny stavu, a prípadne obsahuje ďalšie voliteľné parametre. Na získanie aktuálneho stavu Redux používa \emph{selektory}. Selektor je funkcia, ktorá na vstupe dostane stav a vráti informáciu získanú zo stavu.
+Redux \cite{Reduxdocs} je knižnica v jazyku JavaScript určená na spravovanie globálneho stavu v aplikácii. Redux používa nemenné úložisko (store) na ukladanie globálneho stavu. Stav uložený v store je jednoduchý (plain) JavaScriptový objekt, ktorý je možné meniť iba ako celok. Na zmenu stavu používajú \emph{reducery} a \emph{akcie}. Reducer je funkcia, ktorá na vstupe dostane stav a akciu. Reducer vráti kópiu stavu zmenenú podľa akcie, ktorú uloží do store. Akcia je objekt, ktorý popisuje identifikátor zmeny stavu, a prípadne obsahuje ďalšie voliteľné parametre. Na získanie aktuálneho stavu Redux používa \emph{selektory}. Selektor je funkcia, ktorá na vstupe dostane stav a vráti informáciu získanú zo stavu.
 Redux sa často používa s Reactom na manažovanie stavu Reactových komponentov. Reactové komponent môžu používať hooky pre použite selektorov a zmenu stavu.
 
 
