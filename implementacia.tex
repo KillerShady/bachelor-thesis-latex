@@ -105,6 +105,8 @@ Používateľské rozhranie je vytvorené pomocou knižnice React. Rozhranie sa 
 
 Pre integráciu aplikácie do logického pracovného zošita je potrebná funkcia \texttt{prepare} a Reactový komponent \texttt{AppComponent}. Funkcia \texttt{prepare} slúži pre inicializáciu aplikácie. Funkcia má jeden nepovinný vstupný parameter \texttt{initialState}, podľa ktorého sa inicializuje stav aplikácie. Výstup funkcie je objekt \texttt{instance} a funkcia \texttt{getState}. Objekt \texttt{instance} obsahuje stav aplikácie. Funkcia \texttt{getState} vráti stav aplikácie vo forme JSON súboru. Komponent \texttt{AppComponent} sa bude zobrazovať v logického pracovnom zošite. V rámci komponentu používame náš komponent \texttt{App}. Komponent \texttt{App} je obalený Reduxovým komponentom \texttt{Provider}, ktorý umožní aplikácii prístup k stavu.
 
+Logic Workbook má tiež možnosť dať aplikáciám kontext o zadanom jazyku, formulách a axiómoch. Aplikácia tento kontext bude využívať pomocou funkcií \texttt{createContext} a \texttt{useContext} z knižnice React. Pomocou \texttt{createContext} sme vytvorili vlastný komponent, ktorým sme obalili komponent \texttt{App}. Ak bol aplikácií daný kontext o jazyku, tak sa jazyk uloží do stavu, a naše komponenty pre zadávanie jazyka sa zamknú. Ak bol daný kontext o formulách a axiómoch, tak každá formula alebo axióm budú pridané na začiatok nových postupností úprav, a komponenty \texttt{FormulaComponent} pre nich budú uzamknuté.
+
 
 
 
