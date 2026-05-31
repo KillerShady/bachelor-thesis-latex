@@ -19,12 +19,12 @@
 \usepackage{listings}
 % ukazky kodu su cislovane ako Listing 1,2,...
 % tu je Listing zmenene na Algoritmus 1,2,...
-\renewcommand{\lstlistingname}{Algoritmus}
+\renewcommand{\lstlistingname}{Ukážka kódu}
 % nastavenia balicka listings
 % mozete pridat aj language=...
 % na nastavenie najcastejsie pouzivaneho prog. jazyka
 % takisto sa da zapnut cislovanie riadkov
-\lstset{frame=lines,language=Java}
+\lstset{frame=lines,language=Java,escapeinside={(*}{*)},showstringspaces=false}
 % balicek na vkladanie obrazkov
 \usepackage{graphicx}
 % balicek na vkladanie celych pdf dokumentov, tu zadanie
@@ -46,6 +46,8 @@
 \newcommand{\Terms}{\mathcal{T}_\Lang}
 \newcommand{\Atoms}{\mathcal{A}_\Lang}
 \newcommand{\Forms}{\mathcal{E}_\Lang}
+
+\usepackage{caption}
 
 % -------------------
 % --- Definicia zakladnych pojmov
@@ -255,6 +257,10 @@ In this work, we are developing a web application that will be used as a teachin
 
 
 \input appendixA.tex
+
+\input appendixB.tex
+
+%\input appendixC.tex
 
 
 

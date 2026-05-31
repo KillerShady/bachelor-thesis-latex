@@ -1,34 +1,109 @@
 \chapter{Implementácia}
 
-
+V tejto kapitole bližšie opíšeme konkrétnu implementáciu aplikácie. Začneme krátkym opisom súborovej štruktúry projektu, potom popíšeme ako a prečo sme rozšírily model formúl a nástroj na syntaktickú analýzu. Za tým opíšeme implementáciu kontroly ekvivalentných úprav. Viacero úprav sa kontroluje podobným spôsobom, preto opíšeme ako sa kontroluje jedna z ľahších úprav a tiež opíšeme niektoré úpravy, ktoré majú zložitejšiu kontrolu. Nakoniec opíšeme používateľské rozhranie a implementáciu kompatibility pre logický pracovný zošit. 
 
 \section{Súborová štruktúra}
 
+Všetky zdrojové kódy aplikáciu sú v priečinku \texttt{src}. Štruktúra priečinku je nasledovná:
 
+\begin{itemize}
+\item  \texttt{error\_checkers} - obsahuje súbory tried jednotlivých kontrolórov úprav. Taktiež obsahuje abstraktnú triedu, z ktorej sú zdedené kontrolóry
+\item  \texttt{features} - v osobitných priečinkoch obsahuje jednotlivé časti stavu spomenuté v návrhu \eqref{navrhstavu}. Tiež obsahuje Reactové komponenty k príslušným častiam
+\item  \texttt{model} - obsahuje rozšírený model formúl
+\item  \texttt{state} - obsahuje Reduxový store a základné Reactové hooky pre jeho použitie
+\item  \texttt{tests} - jednotkové testy pre jednotlivé triedy kontroly ekvivalentných formúl
+\end{itemize}
+
+Samotný priečinok \texttt{src} obsahuje súbory:
+
+\begin{itemize}
+\item  \texttt{App.css} a \texttt{App.tsx} - CSS štýly a Reactový komponent celej aplikácie
+\item  \texttt{LogicContext.ts} a \texttt{AppComponent.tsx} - pre integráciu aplikácie do Logic Workbooku
+\item  \texttt{index.ts} a \texttt{main.tsx} - použité pri vývoji aplikácie príkazom \texttt{npm run dev}
+\end{itemize}
+
+\section{Rozšírenie modelu formúl a nástroja na syntaktickú analýzu}
+
+Pre kontrolu ekvivalentńych úprav potrebujeme porovnávať rôzne formuly. Rozhodli sme sa použiť stromový dátový model pre formuly vytvorený počas predošlej bakalárskej práce Jozefa Filipa \cite{structureexplorer} pre reprezentáciu formúl. Taktiež na získanie modelu z textového reťazca použijeme nástroj na syntaktickú analýzu vytvorený počas bakalárskej práce Milana Cifry \cite{explorercifra}. Tento nástroj budeme ďalej nazývať parser. Model je výhodný v tom, že nám umožňuje ľahko prechádzať formulou. Problémom je, že viaceré ekvivalentné úpravy pracujú s tautológiami a nesplniteľnými formulami (napríklad úpravy \eqref{upravy:9}). Preto bolo potrebné rozšíriť model pridaním tried, ktoré ich budú reprezentovať. Aby parser používal naše triedy a vedel rozpoznať textové znaky, ktoré im zodpovedajú, sem ho museli rozšíriť. Ďalším problémom je, že pre kontrolu skolemizácie sú potrebné nové skolemove konštanty a funkcie. Pre jednoduchosť používateľského rozhrania by bolo ideálne použiť jeden textový vstup pre ich zadávanie. Parser má síce možnosť analyzovať konštanty alebo funkcie z textu, ale nemá možnosť ich analyzovať naraz z jedného textu. Parser sme teda rozšírili aj o túto funkcionalitu.
+
+Model reprezentuje jednotlivé časti formúl (ako napríklad konjunkcia, implikácia, negácia atď.) rôznymi triedami. Tieto triedy sú odvodené od abstraktnej triedy \texttt{Formula}. Trieda \texttt{Formula} a abstraktná trieda \texttt{Term}, z ktorej sú odvodené triedy pre reprezentáciu termov, sú odvodené z abstraktnej triedy \texttt{Expression}. Pre reprezentáciu tautológie a nesplniteľnej formuly sme pridali triedy \texttt{AlwaysTrue} a \texttt{AlwaysFalse} ako potomkov triedy \texttt{Formula}. Ukážka triedy \texttt{AlwaysTrue} je v obrázku \eqref{classalwaystrue} a trieda \texttt{AlwaysFalse} je jej podobná. Obidve triedy majú konštruktor bez parametrov a metódu, o ktorej povieme viacej nižšie. Parser bol vytvorený pomocou knižnice \texttt{pegjs} a pre syntaktickú analýzu používa súbor \texttt{grammar.pegjs} v ktorom je zadaný syntax, podľa ktorého sa text analyzuje. Pre vytvorenie konkrétnej štruktúry parser používa takzvané \uv{factories}. Pre rozšírenie analýzy sme pridali dve nové factories a rozšírili súbor \texttt{grammar.pegjs}. Taktiež sme do súboru pridali časti potrebné pre analýzu skolemovských konštánt a funkcií.
+
+\begin{lstlisting}[float,caption={Trieda reprezentujúca tautológiu},label=classalwaystrue]
+class AlwaysTrue extends Formula {
+  constructor() {
+    super([], "", "");
+  }
+
+  toString(): string {
+    return `(*$\top$*)`;
+  }
+
+  flatten() {
+    return new AlwaysTrue();
+  }
+}
+\end{lstlisting}
+
+Jednou zo zložitejších úprav, ktoré v našej aplikácii kontrolujeme je viacnásobná asociativita a komutativita (úpravy \eqref{upravy:7} a \eqref{upravy:8}). Úprava umožňuje usporiadať podformuly spojené konjunkciami alebo podformuly spojené disjunkciami do ľubovoľného usporiadania. Kontrolovať túto úpravu pomocou stromového modelu a algoritmu popísanom v návrhu \eqref{checkeralgorithm} by bolo veľmi ťažké. Pri každej viacnásobnej konjunkcii alebo disjunkcii potrebuje skontrolovať či majú tie isté podformuly. Zároveň štruktúru stromu ovplyvňuje asociativita. Asociativitu vyriešime tým, že strom sploštíme nahradením viacerých binárnych uzlov konjunkcie a disjunkcie jedným n-árnym uzlom. Komutativitu vyriešime tým, že podformuly zoradíme podľa vybraného kanonického usporiadania. Ak sú dve formuly navzájom ekvivalentné, tak po sploštení a usporiadaní budú identické. Toto sploštenie a usporiadanie sme sa rozhodli implementovať rozšírením modelu pridaním novej metódy \texttt{flatten}. 
+
+\label{flatten}Metódu \texttt{flatten} sme definovali ako abstaktnú metódu v abstraktnej triede \texttt{Expre\-ssion}. Metóda \texttt{flatten} vytvorí a vráti kópiu daného stromu, pričom kópia je sploštená a usporiadaná. Metóda najpv vytvorí kópie podstromov zavolaním \texttt{flatten} na podstromy, a potom ich použije ako parametre pre vytvorenie nového objektu rovnakej triedy ako tej, na ktorej bola zavolaná. Samotné sploštenie a usporiadanie je implementované v triedach pre konjunkciu a disjunkciu. Algoritmus pre disjunkciu je podobný algoritmu pre konjunkciu, preto opíšeme iba algoritmus pre konjunkciu. Pri konjunkcii, po vyrobení kópie uzla metóda pre obidva podstromy porovná či trieda koreňa podstromu je tiež konjuncie. Ak áno, tak spojí pole podstromov koreňa s poľom podstromov koreňa podstomu. Keďže podstrom vznikol metódou \texttt{flatten} je zaručené, že ani jeden podstrom konjunkcie nie je konjunkcia, preto je strom sploštení. Po sploštení metóda usporiada pole podstromov. Pre usporiadanie sme implementovali metódu \texttt{compare} tiež ako abstraktnú metódu v triede \texttt{Expression}. Metóda \texttt{compare} rozhodne ako usporiadať stromy, tým že najprv porovná mená konštruktorov, potom porovná prvky, ktoré majú niektoré triedy (ako napríklad \texttt{name} pri triedach termov alebo \texttt{variableName} pri triedach kvantifikátorov) a nakoniec zaradom porovná podstromy.
 
 \section{Kontrola ekvivalentných úprav}
 
+Ako bolo spomenuté v návrhu \eqref{navrhstavu} každá ekvivalentná úprava bude mať osobitnú triedu pre kontrolu jej správnosti. Každá trieda bude obsahovať metódu \texttt{checkTransfo\-rmationApplied}, ktorá rozhodne či ekvivalentná úprava nastala a zavolá hlavný algoritmus na relevantné podstromy. Keďže viacero tried implementuje túto metódu veľmi podobne, ukážeme si iba jednu z nich. Tou triedou je trieda \texttt{ImplicationElimination\-Checker}. Potom si ukážeme pár tried, ktorých implementácie je trochu zložitejšia.
+
+\subsection{ImplicationEliminationChecker}
+
+\begin{lstlisting}[float,caption={Kontrola tried dátového modelu},label=checkRequisites,basicstyle=\small]
+checkRequisites(original: Expression, transformed: Expression) {
+    return (original instanceof Implication &&
+               transformed instanceof Disjunction &&
+               transformed.subLeft instanceof Negation);
+}
+\end{lstlisting}
+
+\texttt{ImplicationEliminationChecker} je trieda, ktorá kontroluje ekvivalentnú úpravu eliminácie implikácie (ľavá úprava \eqref{upravy:1}). Metóda \texttt{checkTransformationApplied} má dva povinné parametre, ktorými sú formuly v stromovej reprezentácii a jeden nepovinný parameter pre výsledok kontroly podstromov, ktoré metóda dostane pri \uv{prebublávaní} chyby nahor popísanej v návrhu. Metóda najprv skontroluje to, či úprava nastala tým, že skontroluje triedy v stromovej reprezentácii dvojice formúl. Na to používa pomocnú metódu \texttt{checkRequisites}, ktorá je zobrazená na obrázku \eqref{checkRequisites}. Keďže úprava mohla byť aplikovaná aj v opačnom smere, ak metóda \texttt{checkRequisites} vráti \texttt{false}, tak sa  znovu zavolá s vymenenými parametrami. Ak aj vtedy \texttt{checkRequisites} vráti \texttt{false}, tak metóda \texttt{checkTransformationApplied} vie, že úprava nenastala správne. Potom sa pozrie či dostala výsledok kontroly podstromov, ak áno tak sa rozhodne, či vráti svoju chybovú hlášku, alebo či vráti výsledok kontroly podstromov. V opačnom prípade, tak vráti výsledok s chybovou hláškou. Ak aspoň raz metóda \texttt{checkRequisites} vrátila výsledok \texttt{true}, tak úprava nastala správne a metóda \texttt{checkTransformationApplied} zavolá hlavný algoritmus texttt{checkForError} z návrhu pre správne podstromy. Konkrétne pre ľavý podstrom implikácie s podstromom negácie a pre pravý podstrom implikácie a pravý podstrom disjunkcie. \texttt{checkTransformationApplied} potom výsledky skombinuje, a keď je výsledok identický alebo ekvivalentný tak metóda vráti ekvivalentný výsledok. Ak výsledok je chybný, vráti ho, pretože obsahuje relevantnejšiu chybovú hlášku.
 
 
-\subsection{Rozšírenie modelu formúl a nástroja na syntaktickú analýzu}
+\subsection{ReorderingChecker}
+
+Trieda \texttt{ReorderingChecker} kontroluje viacnásobnú asociativitu a komutativitu. Používa pri tom metódu dátového modelu \texttt{flatten}, ktorú sme mu pridali. Metóda je popísaná v predošlej podkapitole \eqref{flatten}. Kontrolovanie správnosti pomocou tejto metódy je potom jednoduché. Po použití metódy sa stráca informácia o tom, či sú formuly navzájom identické. Preto trieda najprv skontroluje identickosť formúl, tým že zavolá hlavný algoritmus texttt{checkForError} na formuly, ktoré jej boli dané na vstupe. Ak sú identické, tak ihneď vráti identický výsledok. Inač zavolá hlavný algoritmus texttt{checkForError} na sploštených a usporiadaných formulách vytvorených pomocou metódy \texttt{flatten}. Ak výsledok je teraz identický znamená to, že nastala správna úprava, a preto trieda vráti ekvivalentný výsledok. Inač vráti chybný výsledok s chybovou hláškou.
 
 
+\subsection{SkolemizationChecker}
 
+\begin{lstlisting}[float,caption={Interface skolemizedPattern},label=skolemizedPattern]
+interface skolemizedPattern {
+    name: string,
+    subterms: string[]
+}
+\end{lstlisting}
 
+Trieda \texttt{SkolemizationChecker} kontroluje správnosť skolemizácie. Skolemizácia z formuly vymaže existenčné kvantifikátory a premenné, ktoré kvantifikátory viazali nahradí novými skolemovými funkciami a konštantami. Ak sa existenčný kvantifikákor nachádzal v oblasti platnosti niektorých všeobecných kvantifikátorov, nahradí premennú novou skolemovou funkciou, ktorej podtermy sú všetky premenné viazané tými všeobecnými kvantifikátormi. Inač nahradí premennú skolemovou konštantou. Pre kontrolu skolemizácia trieda \texttt{SkolemizationChecker} bude používať viacero súkromných atribút. Tie možno vidieť v obrázku \eqref{skolemAtts}. 
+Pred začiatkom kontroly budú triede priradené nové skolemové konštanty a funkcie, ktoré používateľ zadal. Tie trieda uchová v poliach v objekte \texttt{allowedSkolemSymbols}. Trieda bude súčasne rekurzívne prechádzať dvojicu formúl v stromovej reprezentácii. Ak narazí na všeobecný kvantifikátor, pridá meno premennej, ktorú kvantifikátor viaže na koniec poľa \texttt{universalQuants}. Ak narazí na existenčný kvantifikátor v prvej formule, ale nie v druhej formule, tak usúdi, že tento existenčný kvantifikátor bude skolemizovaný. Zapíše si do mapy \texttt{changedVars} nový objekt typu \texttt{skolemizedPattern}, kde \texttt{name} je prázdny reťazec, a \texttt{subterms} je kópia poľa \texttt{universalQuants}. Kľúčom je meno premennej, ktorú existenčný kvantifikátor viazal. Interface typu \texttt{skolemizedPattern} je v obrázku \eqref{skolemizedPattern}. \texttt{name} reprezentuje meno funkcie alebo konštanty, ktorá nahradí premennú a \texttt{subterms} reprezentuje premenné viazané všeobecnými kvantifikátormi. \texttt{name} je zatiaľ prázdne, lebo trieda nevie aká konštanta alebo funkcia bude nahrádzať danú premennú. Keď trieda narazí na premennú, skontroluje či premenná má byť skolemizovaná, tým že pozrie či mapa \texttt{changedVars} obsahuje meno premennej ako kľuč. Ak neobsahuje, tak trieda ďalej pokračuje v algoritme. Inač skontroluje či druhá formula obsahuje správnu skolemovú konštantu alebo funkciu. 
+Kontrolu urobí tak, že sa zoberie objekt typu \texttt{skolemizedPattern} z mapy. Ak dĺžka poľa \texttt{subterms} je nulová, tak koreň druhej formuly musí byť konštanta. Ak je nenulová, tak musí byť funkcia. Ďalej sa pozrie na \texttt{name}. Ak \texttt{name} je prázdny reťazec, tak skontroluje meno konštanty alebo funkcie. Ak \texttt{name} je prázdny reťazec, tak trieda usúdi že skolemovu konštantu alebo funkciu vidí prvýkrát. Pozrie či je meno v \texttt{allowedSkolemSymbols} a či nebolo už použité pre skolemizáciu iného kvantifikátor tým že pozrie do množiny \texttt{usedSymbols}. Ak meno je nová skolemova funkcia alebo konštanta, ktorá nebola použitá, tak \texttt{name} prepíše a pridá ho do množiny \texttt{usedSymbols}. Navyše pre skolemové funkcie, pozrie či funkcia obsahuje všetky premenne, ktoré sú zapísané v \texttt{subterms}.
 
+\begin{lstlisting}[float,caption={Atribúty triedy SkolemizationChecker},label=skolemAtts]
+universalQuants: string[]
+changedVars: Map<string, skolemizedPattern>
+allowedSkolemSymbols: {constants: string[], functions: SymbolWithArity[]}
+usedSymbols: Set<string>
+\end{lstlisting}
+
+\section{Implementácia použivateľského rozhrania}
+
+Používateľské rozhranie je vytvorené pomocou knižnice React. Rozhranie sa skladá z Reactových komponentov. Aplikácia sa skladá z komponentu \texttt{App}, ktorý obsahuje tri komponenty. Prvý komponent \texttt{ImportExportComponent} obsahuje tlačidlá pre uloženie a načítanie stavu. Druhý komponent \texttt{LanguageComponent} slúži pre zadávanie jazyka a skladá sa z troch komponentov \texttt{LanguageInput}, ktoré slúžia na zadávanie mimologických symbolov. Tretí komponent \texttt{TransformationsComponent} slúži ako hlavná časť aplikácie. Pre každú postupnosť zo stavu vytvorí komponent \texttt{SequenceComponent}. \texttt{SequenceComponent} následne vytvorí \texttt{FormulaComponent} pre každú formulu z postupnosti úprav. Každá formula postupnosti okrem prvej má tlačidlo pre vyber úpravy, ktorá sa kontroluje. Výhodou použitia knižnice React je, že komponenty sa prekresľujú iba ak je to potrebné. Napríklad ak sa zmení text formuly, prekreslí sa iba \texttt{FormulaComponent} a \texttt{LanguageComponent} sa neprekreslí. Ukážka rozhrania je v obrázku \eqref{obr:UIshowcase}.
+
+\begin{figure}[!tb]
+\centerline{\includegraphics[scale=0.5]{images/finishedUI3}}
+\caption[Ukážka používateľského rozhrania]{Ukážka používateľského rozhrania}
+\label{obr:UIshowcase}
+\end{figure}
 
 
 \section{Implementácia knižnice pre Logic Workbook}
 
-
-
-
-
-
-\section{Implementácia použivateľského rozhrania}
-
-
-
+Pre integráciu aplikácie do logického pracovného zošita je potrebná funkcia \texttt{prepare} a Reactový komponent \texttt{AppComponent}. Funkcia \texttt{prepare} slúži pre inicializáciu aplikácie. Funkcia má jeden nepovinný vstupný parameter \texttt{initialState}, podľa ktorého sa inicializuje stav aplikácie. Výstup funkcie je objekt \texttt{instance} a funkcia \texttt{getState}. Objekt \texttt{instance} obsahuje stav aplikácie. Funkcia \texttt{getState} vráti stav aplikácie vo forme JSON súboru. Komponent \texttt{AppComponent} sa bude zobrazovať v logického pracovnom zošite. V rámci komponentu používame náš komponent \texttt{App}. Komponent \texttt{App} je obalený Reduxovým komponentom \texttt{Provider}, ktorý umožní aplikácii prístup k stavu.
 
 
 

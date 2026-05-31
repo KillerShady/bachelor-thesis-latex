@@ -14,7 +14,7 @@ Aplikácia je určená pre výučbu predmetu Logika pre informatikov, kde sa pou
 
 \section{Návrh}
 
-\subsection{Návrh stavu aplikácie}
+\subsection{Návrh stavu aplikácie}\label{navrhstavu}
 
 Stav aplikácie bude rozdelený na 3 časti: jazyk, úpravy a ukladanie/načítanie. Každá časť bude uchovávať iba nevyhnutné dáta. V stave nebude potrebné ukladať komplexnejšie dáta, ktoré vieme odvodiť z uložených.
 
@@ -28,11 +28,17 @@ Posledná časť bude určená pre ukladanie a načítanie stavu. Jediné čo bu
 
 \subsection{Návrh kontroly úprav}
 
+\begin{figure}[tbh]
+\centerline{\includegraphics[width=\textwidth]{images/BcMatchingClassDiagram}}
+\caption[Diagram tried kontroly úprav]{Diagram tried kontroly ekvivalentných úprav}
+\label{obr:ClassDiagram}
+\end{figure}
+
 Hlavný problém pri kontrole ekvivalentných úprav je, že úprava mohla nastať ľubovoľný počet krát v ľubovoľnej časti formuly. Ak by sme kontrolovali každé miesto kde by mohla nastať úprava, riešenie by bolo príliš neefektívne a pomalé. Ale môžeme využiť to, že jedna formula vznikla úpravou druhej formuly, a preto buď je časť prvej formuly rovnaká s časťou druhej formuly, alebo nastala úprava. Ak pri súčasnom rekurzívnom prechádzaní stromových reprezentácií obidvoch formúl nájdeme rozdiel, môžeme usúdiť že sa používateľ na danom mieste pokúsil urobiť ekvivalentnú úpravu. Problém nastane keď niektoré ekvivalentné úpravy nemenia časti formúl, ako napríklad formuly \ref{upravy:8}, kde obidve formuly zdieľajú tú istú spojku. Týmto spôsobom by sme preskočili rovnakú spojku a našli rozdielne neekvivalentné podformuly, z toho by sme zle usúdili, že nastala chyba. Toto vyriešime tým, že chyby budú \uv{prebublávať} hore. Ak sa program rekurzívne dostal do koreňa $A$ a našiel chybu v jeho podstrome tak sa pozrie, či nenastala úprava v koreni $A$. Riešenie sa síce spomalí, ale vďaka tomu že kontrolór je určený ako učebná pomôcka, stromové reprezentácie vstupných formúl nebudú príliš hlboké, a preto spomalenie je zanedbateľné.
 
 Výsledok kontroly bude reprezentovaný osobitnou triedou. Trieda výsledku bude obsahovať metódy na zistenie výsledku a tiež metódu na kombinovanie výsledkov. Možné hodnoty výsledku budú tri: identický, ekvivalentný a chybný. Identický výsledok znamená, že podstromy sú identické. Ekvivalentný výsledok je vrátený, keď v podstrome nastala aspoň jedna ekvivalentná úprava a všetky úpravy sú bezchybné. Chybný výsledok znamená, že v podstrome nastala buď chybná úprava, alebo iná chyba. Navyše obsahuje chybnú hlášku, ktorá sa neskôr zobrazí používateľovi. 
 
-Rôzne ekvivalentné úpravy budeme reprezentovať osobitnými triedami pre každú úpravu. Triedy budú odvodené z abstraktnej triedy, ktorá bude obsahovať spoločnú časť algoritmu kontroly. Triedy sa budú líšiť v časti, ktorá usúdi či na konkrétnom mieste formuly nastala ekvivalentná úprava. Diagram tried je zobrazený v obrázku \ref{obr:ClassDiagram}. Pseudokód spoločnej rekurzívnej časti kontroly je nasledovný:
+\label{checkeralgorithm}Rôzne ekvivalentné úpravy budeme reprezentovať osobitnými triedami pre každú úpravu. Triedy budú odvodené z abstraktnej triedy, ktorá bude obsahovať spoločnú časť algoritmu kontroly. Triedy sa budú líšiť v časti, ktorá usúdi či na konkrétnom mieste formuly nastala ekvivalentná úprava. Diagram tried je zobrazený v obrázku \ref{obr:ClassDiagram}. Pseudokód spoločnej rekurzívnej časti kontroly je nasledovný:
 
 \begin{lstlisting}[]
 checkForError(orig, trans) {
@@ -47,12 +53,6 @@ checkForError(orig, trans) {
 \end{lstlisting}
 
 Metódy \texttt{sameFunctor} a \texttt{checkChildren} budú súčasťou abstraktnej triedy. Funkcia \texttt{sameFunctor} zistí či korene stromov sú rovnaké (či sú obidva korene rovnaké spojky, rovnaké quantifikátory s rovnakými premennými atď.). Keďže stromové reprezentácie formúl sú n-árne metóda \texttt{checkChildren} zavolá rekurzívnu kontrolu koreňov všetkých podstromov a skombinuje ich výsledky. Metóda \texttt{checkTransformationApplied} je abstraktná, ktoré konkrétne triedy prepíšu. Ak ekvivalentná úprava nastala, tak bude potrebné zavolať rekurziu na iné podstromy než tie ktoré skontrolovala \texttt{checkChildren}. Z toho dôvodu metóda tiež zavolá rekurzívnu kontrolu všetkých potrebných podstromov.
-
-\begin{figure}[h]
-\centerline{\includegraphics[width=\textwidth]{images/BcMatchingClassDiagram}}
-\caption[Diagram tried kontroly úprav]{Diagram tried kontroly ekvivalentných úprav}
-\label{obr:ClassDiagram}
-\end{figure}
 
 
 
